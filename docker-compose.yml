@@ -1,0 +1,66 @@
+version: "3.7"
+
+services:
+  phonehandler:
+    build:
+      context: ./bin/phonehandler
+    image: collectorate_control_room/trivandrum_phonebook:phonehandler
+    container_name: "collectorate_control_room-trivandrum_phonebook-phonehandler"
+    restart: "always"
+    ports:
+      - "${TRIVANDRUM_PHONEBOOK_PHONEHANDLER_PORT}:5000"
+    links:
+      - mariadb
+    volumes:
+      - ${LOG_FILE-./logs/phonehandler/}:/usr/share/phonehandler/logs/
+
+  controlpanel:
+    build:
+      context: ./bin/controlpanel
+    image: collectorate_control_room/trivandrum_phonebook:controlpanel
+    container_name: "collectorate_control_room-trivandrum_phonebook-controlpanel"
+    restart: "always"
+    ports:
+      - "${TRIVANDRUM_PHONEBOOK_CONTROLPANEL_UNSECURE_HOST_PORT}:80"
+      - "${TRIVANDRUM_PHONEBOOK_CONTROLPANEL_SECURE_HOST_PORT}:443"
+    links:
+      - mariadb
+    volumes:
+      - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
+      - ${OPENLITESPEED_CONFIG-./config/openlitespeed-config/httpd_config.conf}:/usr/local/lsws/conf/httpd_config.conf
+      - ${OPENLITESPEED_VHOST-./config/openlitespeed-vhosts/vhconf.conf}:/usr/local/lsws/conf/vhosts/Example/vhconf.conf
+      - ${DOCKER_CONFIG-./config/openlitespeed-docker/docker.conf}:/usr/local/lsws/conf/templates/docker.conf
+      - ${LOG_DIR-./logs/openlitespeed}:/usr/local/lsws/logs/
+
+  mariadb:
+    build:
+      context: ./bin/mariadb
+    image: collectorate_control_room/trivandrum_phonebook:mariadb
+    container_name: "collectorate_control_room-trivandrum_phonebook-mariadb"
+    restart: "always"
+    ports:
+      - "${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_PORT}:3306"
+    volumes:
+      - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+    environment:
+      TZ: ${TRIVANDRUM_PHONEBOOK_DATABASE_TIMEZONE}
+      MYSQL_ROOT_PASSWORD: ${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_DATABASE}
+      MYSQL_USER: ${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_USER}
+      MYSQL_PASSWORD: ${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_PASSWORD}
+
+  phpmyadmin:
+    build:
+      context: ./bin/phpmyadmin
+    image: techwithus/exammarker:phpmyadmin
+    container_name: "phpmyadmin-exammarker-techwithus"
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: ${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_PORT}
+    ports:
+      - "${TRIVANDRUM_PHONEBOOK_PHPMYADMIN_PORT}:80"
+    volumes:
+      - /sessions

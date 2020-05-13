@@ -6,7 +6,7 @@ RUN apt-get -y update
 RUN apt-get upgrade -y
 
 # Clone Trivandrum phonebook API handler
-RUN https://github.com/sashuu6/trivandrum-phonebook-api_handler.git /usr/share/webhandler/
+RUN git clone https://github.com/sashuu6/trivandrum-phonebook-api_handler.git /usr/share/phonehandler/
 
 # Autoremove unnecessary tools
 RUN apt-get autoremove -y

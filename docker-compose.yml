@@ -56,7 +56,7 @@ services:
     image: techwithus/exammarker:phpmyadmin
     container_name: "phpmyadmin-exammarker-techwithus"
     links:
-      - mysql
+      - mariadb
     environment:
       PMA_HOST: mariadb
       PMA_PORT: ${TRIVANDRUM_PHONEBOOK_DATABASE_MYSQL_PORT}

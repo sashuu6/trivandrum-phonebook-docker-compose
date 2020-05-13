@@ -8,10 +8,13 @@ RUN apt-get upgrade -y
 # Clone Trivandrum phonebook API handler
 RUN git clone https://github.com/sashuu6/trivandrum-phonebook-api_handler.git /usr/share/phonehandler/
 
+# Requirements.txt
+RUN pip3 install -r /usr/share/phonehandler/requirements.txt
+
 # Autoremove unnecessary tools
 RUN apt-get autoremove -y
 
 # Runs app.py
-# EXPOSE 5000
-# ENTRYPOINT ["python3"]
-# CMD ["/usr/share/webhandler/app.py"]
+EXPOSE 5000
+ENTRYPOINT ["python3"]
+CMD ["/usr/share/phonehandler/app.py"]

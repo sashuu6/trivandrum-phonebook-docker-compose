@@ -15,6 +15,6 @@ RUN pip3 install -r /usr/share/phonehandler/requirements.txt
 RUN apt-get autoremove -y
 
 # Runs app.py
-EXPOSE 5000
-ENTRYPOINT ["python3"]
-CMD ["/usr/share/phonehandler/app.py"]
+ENV FLASK_APP /usr/share/phonehandler/app.py
+ENV FLASK_RUN_HOST 0.0.0.0
+CMD ["flask", "run"]

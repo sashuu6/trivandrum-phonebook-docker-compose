@@ -9,7 +9,7 @@ services:
     restart: "always"
     ports:
       - "${TRIVANDRUM_PHONEBOOK_PHONEHANDLER_PORT}:5000"
-    working_dir: /usr/share/phonehandler/
+    working_dir: /usr/share/phonehandler
     environment:
       FLASK_ENV: ${TRIVANDRUM_PHONEBOOK_PHONEHANDLER_ENV}
     links:
